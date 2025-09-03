@@ -6,11 +6,12 @@ type IntroVideoProps = {
 };
 
 export default function IntroVideo({ targetId = 'hero' }: IntroVideoProps) {
+  void targetId; // evita TS6133 (noUnusedParameters) sin cambiar la lógica
+
   const [closing, setClosing] = useState(false);
   const [hidden, setHidden] = useState(false);
   const wrapRef = useRef<HTMLDivElement | null>(null);
 
-  // Bloquear scroll del body mientras el intro esté visible
   useEffect(() => {
     const prevOverflow = document.body.style.overflowX;
     const prevOverflowY = document.body.style.overflowY;
@@ -28,9 +29,6 @@ export default function IntroVideo({ targetId = 'hero' }: IntroVideoProps) {
     setClosing(true);
     setTimeout(() => {
       setHidden(true);
-      // Evitamos scrollIntoView (causaba el “bajón”)
-      // Si quieres, podrías forzar al tope:
-      // window.scrollTo({ top: 0, behavior: 'auto' });
     }, 360);
   };
 
@@ -40,8 +38,8 @@ export default function IntroVideo({ targetId = 'hero' }: IntroVideoProps) {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') handleEnter();
     };
-    n.addEventListener('keydown', onKey as any);
-    return () => n.removeEventListener('keydown', onKey as any);
+    n.addEventListener('keydown', onKey);
+    return () => n.removeEventListener('keydown', onKey);
   }, []);
 
   if (hidden) return null;
