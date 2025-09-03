@@ -17,8 +17,9 @@ const VALUES: Value[] = [
 ];
 
 export default function QuienesSomos() {
-  /** ====== Timeline (CSS loop) ====== */
+  /** ====== Timeline ====== */
   const viewportRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLUListElement | null>(null);
 
   // Deben corresponder aproximadamente a las variables CSS --dotSize y --gap
   const ICON_SIZE = 120;
@@ -36,14 +37,12 @@ export default function QuienesSomos() {
     setBaseCount(needed);
   }, []);
 
-  // bloque base
   const baseItems = useMemo(() => {
     const arr: Value[] = [];
     for (let i = 0; i < baseCount; i++) arr.push(VALUES[i % VALUES.length]);
     return arr;
   }, [baseCount]);
 
-  // pista = dos copias del bloque base; el globo se muestra en AMBAS copias
   const handleToggleBubble = (i: number) =>
     setOpenIdx((cur) => (cur === i ? null : i));
 
@@ -57,15 +56,11 @@ export default function QuienesSomos() {
       document.querySelectorAll<HTMLElement>(".reveal")
     );
 
-    // Agrega .is-in al entrar y la quita al salir (arriba/abajo)
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("is-in");
-          } else {
-            e.target.classList.remove("is-in");
-          }
+          if (e.isIntersecting) e.target.classList.add("is-in");
+          else e.target.classList.remove("is-in");
         });
       },
       { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
@@ -74,6 +69,80 @@ export default function QuienesSomos() {
     reveals.forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, []);
+
+  /* ------------------ AUTOSCROLL + DRAG ------------------ */
+  useEffect(() => {
+    const vp = viewportRef.current;
+    const track = trackRef.current;
+    if (!vp || !track) return;
+
+    let isDown = false;
+    let startX = 0;
+    let startScroll = 0;
+
+    // velocidad en px/seg
+    const SPEED = 30;
+    let raf = 0;
+    let lastTs = 0;
+
+    const halfWidth = () => track.scrollWidth / 2;
+
+    // Mantener loop infinito teletransportando el scroll
+    const wrap = () => {
+      const hw = halfWidth();
+      if (vp.scrollLeft >= hw) vp.scrollLeft -= hw;
+      else if (vp.scrollLeft < 0) vp.scrollLeft += hw;
+    };
+
+    // Auto-scroll suave (pausado al arrastrar)
+    const step = (ts: number) => {
+      if (!lastTs) lastTs = ts;                 // init
+      const dt = (ts - lastTs) / 1000;          // segundos desde el último frame
+
+      if (!isDown) {
+        vp.scrollLeft += SPEED * dt;
+        wrap();
+      }
+      lastTs = ts;                               // 🔧 ACTUALIZAR SIEMPRE (fix)
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+
+    // Pointer events (mouse + touch)
+    const onPointerDown = (e: PointerEvent) => {
+      isDown = true;
+      vp.classList.add("is-dragging");
+      startX = e.clientX;
+      startScroll = vp.scrollLeft;
+      (e.target as Element).setPointerCapture?.(e.pointerId);
+    };
+    const onPointerMove = (e: PointerEvent) => {
+      if (!isDown) return;
+      const dx = e.clientX - startX;
+      vp.scrollLeft = startScroll - dx;
+      wrap();
+    };
+    const endDrag = (e?: PointerEvent) => {
+      isDown = false;
+      vp.classList.remove("is-dragging");
+      if (e) (e.target as Element).releasePointerCapture?.(e.pointerId);
+    };
+
+    vp.addEventListener("pointerdown", onPointerDown, { passive: true });
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener("pointerup", endDrag, { passive: true });
+    window.addEventListener("pointercancel", endDrag, { passive: true });
+
+    // Limpieza
+    return () => {
+      cancelAnimationFrame(raf);
+      vp.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", endDrag);
+      window.removeEventListener("pointercancel", endDrag);
+    };
+  }, [baseItems.length]);
+
   /* ------------------------------------------------------------ */
 
   return (
@@ -84,14 +153,8 @@ export default function QuienesSomos() {
           <h2 className="qs__title reveal reveal-up">Nuestra Historia</h2>
 
           <div className="qs__copy reveal reveal-up stagger">
-            <p>
-              En el año 2013, iniciamos nuestro viaje como Greenfield, un sueño audaz y financieramente
-              arriesgado, que consolidamos juntos. Nuestro enfoque inicial fue en nutrición vegetal para incrementar
-              los rendimientos de los cultivos en Bolivia.
-            </p>
-            <p>
-              Hoy demostramos al mundo que Bolivia es un generador de alimentos para la agricultura a nivel mundial.
-            </p>
+            <p>En el año 2013, iniciamos nuestro viaje como Greenfield, un sueño audaz y financieramente arriesgado, que consolidamos juntos. Nuestro enfoque inicial fue en nutrición vegetal para incrementar los rendimientos de los cultivos en Bolivia.</p>
+            <p>Hoy demostramos al mundo que Bolivia es un generador de alimentos para la agricultura a nivel mundial.</p>
           </div>
 
           <div className="qs-video reveal reveal-right">
@@ -141,11 +204,11 @@ export default function QuienesSomos() {
           </article>
         </div>
 
-        {/* TIMELINE: fila propia que ocupa todo el ancho, no mueve las tarjetas */}
+        {/* TIMELINE */}
         <div className="qs-timeline reveal reveal-up">
           <div className="qs-timeline__viewport" ref={viewportRef}>
-            {/* Copia A (con globos) */}
-            <ul className="qs-timeline__track" style={{ animationDelay: "-14s" }}>
+            {/* Copia A */}
+            <ul className="qs-timeline__track" ref={trackRef} style={{ animationDelay: "-14s" }}>
               {baseItems.map((v, i) => (
                 <li key={`a-${i}-${v.key}`} className="qs-timeline__item">
                   <button
@@ -158,26 +221,15 @@ export default function QuienesSomos() {
                   </button>
 
                   <span className="qs-timeline__caption" aria-hidden="true">{v.title}</span>
-                  <div
-                    className={"qs-bubble " + (openIdx === i ? "is-open" : "")}
-                    role="dialog"
-                    aria-modal="false"
-                  >
-                    <h5 className="qs-bubble__title">{v.title}</h5>
-                    <p className="qs-bubble__text">{v.text}</p>
-                  </div>
-                  <div
-                    className={"qs-bubble " + (openIdx === i ? "is-open" : "")}
-                    role="dialog"
-                    aria-modal="false"
-                  >
+
+                  <div className={"qs-bubble " + (openIdx === i ? "is-open" : "")} role="dialog" aria-modal="false">
                     <h5 className="qs-bubble__title">{v.title}</h5>
                     <p className="qs-bubble__text">{v.text}</p>
                   </div>
                 </li>
               ))}
 
-              {/* Copia B (también con globos para que los últimos SÍ abran) */}
+              {/* Copia B */}
               {baseItems.map((v, i) => (
                 <li key={`b-${i}-${v.key}`} className="qs-timeline__item">
                   <button
@@ -188,21 +240,11 @@ export default function QuienesSomos() {
                   >
                     <img src={v.img} alt="" />
                   </button>
-                    <span className="qs-timeline__caption" aria-hidden="true">{v.title}</span>
-                    <div
-                      className={
-                        "qs-bubble " + (openIdx === i + baseItems.length ? "is-open" : "")
-                      }
-                      role="dialog"
-                      aria-modal="false"
-                    >
-                      <h5 className="qs-bubble__title">{v.title}</h5>
-                      <p className="qs-bubble__text">{v.text}</p>
-                    </div>
+
+                  <span className="qs-timeline__caption" aria-hidden="true">{v.title}</span>
+
                   <div
-                    className={
-                      "qs-bubble " + (openIdx === i + baseItems.length ? "is-open" : "")
-                    }
+                    className={"qs-bubble " + (openIdx === i + baseItems.length ? "is-open" : "")}
                     role="dialog"
                     aria-modal="false"
                   >
@@ -214,7 +256,6 @@ export default function QuienesSomos() {
             </ul>
           </div>
         </div>
-        {/* /TIMELINE */}
       </div>
     </section>
   );

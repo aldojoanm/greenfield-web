@@ -178,21 +178,27 @@
   margin-bottom: -3.5rem;
 }
 
-.qs-timeline__viewport{ overflow: visible; }
+/* ---- CAMBIO: el viewport ahora recorta y permite scroll ---- */
+.qs-timeline__viewport{
+  overflow: hidden;            /* recorta para que el scrollLeft se vea */
+  touch-action: pan-x;         /* permite desplazamiento táctil horizontal */
+  cursor: grab;
+}
+.qs-timeline__viewport.is-dragging{ cursor: grabbing; }
 
-/* Pista: dos copias; infinito; NUNCA se pausa */
+/* ---- CAMBIO: sin animación CSS; el auto-movimiento lo hace JS ---- */
 .qs-timeline__track{
   display:flex;
   align-items:center;
   gap: var(--gap);
   width:max-content;
-  animation: qs-scroll var(--trackSpeed) linear infinite;
+  /* animation: qs-scroll var(--trackSpeed) linear infinite;  ← desactivado */
   will-change: transform;
 }
-@keyframes qs-scroll{
+/* @keyframes qs-scroll{
   from{ transform: translateX(0); }
-  to  { transform: translateX(-50%); }  /* copia A + copia B */
-}
+  to  { transform: translateX(-50%); }
+} */
 
 /* Items */
 .qs-timeline__item{
@@ -251,9 +257,6 @@
 
 /* =========================
    SOLO MÓVIL (<= 980px)
-   - Cartas más chicas
-   - "Nuestros Valores" debajo de las cartas
-   - Iconos de valores más grandes
    ========================= */
 @media (max-width: 980px){
 
