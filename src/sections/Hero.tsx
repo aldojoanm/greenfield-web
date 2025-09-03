@@ -20,7 +20,7 @@ const SLIDES: Slide[] = [
     headline: "Protección inteligente,",
     subline: "eficacia garantizada",
     copyPos: "rt",
-    fgScale: 1.30,
+    fgScale: 1.10,
     fgYOffset: "2vh",
   },
   {
