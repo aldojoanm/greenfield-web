@@ -20,7 +20,7 @@ const SLIDES: Slide[] = [
     headline: "Protección inteligente,",
     subline: "eficacia garantizada",
     copyPos: "rt",
-    fgScale: 1.10,
+    fgScale: 0.9,
     fgYOffset: "2vh",
   },
   {
@@ -29,7 +29,7 @@ const SLIDES: Slide[] = [
     headline: "Vigor desde la raíz,",
     subline: "rendimiento en la cosecha",
     copyPos: "lb",
-    fgScale: 1.10,
+    fgScale: 0.8,
     fgYOffset: "0vh",
   },
   {
@@ -38,7 +38,7 @@ const SLIDES: Slide[] = [
     headline: "Nutrición avanzada,",
     subline: "hojas fuertes y productivas",
     copyPos: "lt",
-    fgScale: 0.94,
+    fgScale: 0.7,
     fgYOffset: "0vh",
   },
 ];
