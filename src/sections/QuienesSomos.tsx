@@ -21,7 +21,7 @@ export default function QuienesSomos() {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLUListElement | null>(null);
 
-  // Deben corresponder aproximadamente a las variables CSS --dotSize y --gap
+  // Deben corresponder aprox. a --dotSize y --gap
   const ICON_SIZE = 120;
   const GAP = 110;
 
@@ -70,76 +70,97 @@ export default function QuienesSomos() {
     return () => io.disconnect();
   }, []);
 
-  /* ------------------ AUTOSCROLL + DRAG ------------------ */
+  /* ------------------ AUTOSCROLL + DRAG (desktop + móvil) ------------------ */
   useEffect(() => {
     const vp = viewportRef.current;
     const track = trackRef.current;
     if (!vp || !track) return;
 
-    let isDown = false;
-    let startX = 0;
-    let startScroll = 0;
+    // velocidad (más alta en pantallas táctiles)
+    const isCoarse = window.matchMedia?.("(pointer: coarse)")?.matches ?? false;
+    const SPEED = isCoarse ? 140 : 60; // px/seg → móvil más rápido
 
-    // velocidad en px/seg
-    const SPEED = 30;
     let raf = 0;
     let lastTs = 0;
+    let didInit = false;
+
+    // arrastre con umbral para no bloquear el click/tap
+    let press = false;
+    let dragging = false;
+    let startX = 0;
+    let startScroll = 0;
+    const DRAG_THRESHOLD = 6; // px
 
     const halfWidth = () => track.scrollWidth / 2;
 
-    // Mantener loop infinito teletransportando el scroll
     const wrap = () => {
       const hw = halfWidth();
+      if (hw <= 0) return;
       if (vp.scrollLeft >= hw) vp.scrollLeft -= hw;
       else if (vp.scrollLeft < 0) vp.scrollLeft += hw;
     };
 
-    // Auto-scroll suave (pausado al arrastrar)
     const step = (ts: number) => {
-      if (!lastTs) lastTs = ts;                 // init
-      const dt = (ts - lastTs) / 1000;          // segundos desde el último frame
+      if (!lastTs) lastTs = ts;
+      const dt = (ts - lastTs) / 1000;
 
-      if (!isDown) {
+      // kick/centrado inicial (evita quedarse en 0)
+      if (!didInit) {
+        const hw = halfWidth();
+        if (hw > 0) {
+          vp.scrollLeft = Math.floor(hw / 2) + 1;
+          wrap();
+          didInit = true;
+        }
+      }
+
+      if (!dragging) {
         vp.scrollLeft += SPEED * dt;
         wrap();
       }
-      lastTs = ts;                               // 🔧 ACTUALIZAR SIEMPRE (fix)
+
+      lastTs = ts;
       raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 
-    // Pointer events (mouse + touch)
     const onPointerDown = (e: PointerEvent) => {
-      isDown = true;
-      vp.classList.add("is-dragging");
+      press = true;
+      dragging = false;
       startX = e.clientX;
       startScroll = vp.scrollLeft;
+      vp.classList.add("is-dragging");
       (e.target as Element).setPointerCapture?.(e.pointerId);
     };
+
     const onPointerMove = (e: PointerEvent) => {
-      if (!isDown) return;
+      if (!press) return;
       const dx = e.clientX - startX;
-      vp.scrollLeft = startScroll - dx;
-      wrap();
+      if (!dragging && Math.abs(dx) > DRAG_THRESHOLD) dragging = true;
+      if (dragging) {
+        vp.scrollLeft = startScroll - dx;
+        wrap();
+      }
     };
-    const endDrag = (e?: PointerEvent) => {
-      isDown = false;
+
+    const onPointerUp = (e: PointerEvent) => {
+      press = false;
+      dragging = false;
       vp.classList.remove("is-dragging");
-      if (e) (e.target as Element).releasePointerCapture?.(e.pointerId);
+      (e.target as Element).releasePointerCapture?.(e.pointerId);
     };
 
     vp.addEventListener("pointerdown", onPointerDown, { passive: true });
     window.addEventListener("pointermove", onPointerMove, { passive: true });
-    window.addEventListener("pointerup", endDrag, { passive: true });
-    window.addEventListener("pointercancel", endDrag, { passive: true });
+    window.addEventListener("pointerup", onPointerUp, { passive: true });
+    window.addEventListener("pointercancel", onPointerUp, { passive: true });
 
-    // Limpieza
     return () => {
       cancelAnimationFrame(raf);
       vp.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", endDrag);
-      window.removeEventListener("pointercancel", endDrag);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
     };
   }, [baseItems.length]);
 
