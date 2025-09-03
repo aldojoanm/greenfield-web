@@ -1,0 +1,148 @@
+/* ====== Variables globales de altura (usadas también por Hero) ====== */
+:root{
+  --brand-dark: #255218;
+  --topbar: #0f2823;
+  --ink: #1f2937;
+
+  --topbar-h: 34px;   /* franja verde */
+  --nav-h: 72px;      /* barra blanca */
+
+  --logo-size: 60px;
+  --logo-drop: 32px;
+  --curve-diam: 112px;
+  --curve-lift: 30px;
+
+  /* altura total del header fijo */
+  --header-h: calc(var(--topbar-h) + var(--nav-h));
+}
+
+/* ====== Offset y espaciado de secciones ====== */
+.main-offset, main{ padding-top: var(--header-h); }
+section{ padding-block: clamp(48px, 8vw, 128px); }
+section[id]{ scroll-margin-top: calc(var(--header-h) + 16px); }
+/* si quieres que el HERO se meta bajo la curva, descomenta: */
+/* section.hero{ margin-top: calc(var(--curve-lift) * -1); } */
+
+/* ——— Franja superior ——— */
+.top-strip{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--topbar-h);
+  background: var(--topbar);
+  z-index: 100;
+  padding-top: env(safe-area-inset-top, 0);
+}
+.top-strip__inner{
+  height: 100%;
+  padding: 0 clamp(10px, 3vw, 24px);
+  display: flex; align-items: center; justify-content: flex-end;
+}
+.social-icons{ display: flex; gap: 12px; color: #e4f07a; }
+.icon{
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; color: #ffffff;
+  transition: transform .15s ease, filter .2s ease;
+}
+.icon:hover{ transform: translateY(-1px); filter: brightness(1.08); }
+
+/* ——— Barra blanca + curva ——— */
+.nav-strip{
+  position: fixed;
+  top: var(--topbar-h); left: 0; right: 0;
+  background: #fff;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+  z-index: 99;
+}
+.nav-strip__inner{
+  height: var(--nav-h);
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* brand | menu | toggle */
+  align-items: center;
+  gap: 16px;
+  padding: 0 clamp(12px, 4vw, 48px);
+  position: relative;
+}
+
+.brand-wrap{
+  position: relative;
+  width: max(var(--logo-size), 56px);
+  height: var(--nav-h);
+  display: flex; align-items: center; justify-content: flex-start;
+  padding-top: var(--logo-drop);
+}
+.brand-logo--round{
+  height: var(--logo-size);
+  width: auto; object-fit: contain; display: block; user-select: none;
+}
+.brand-curve{
+  position: absolute;
+  left: calc((var(--logo-size)/2) - (var(--curve-diam)/2));
+  top: calc(var(--nav-h) - 1px - var(--curve-lift));
+  width: var(--curve-diam);
+  height: calc(var(--curve-diam)/2);
+  background: #fff;
+  border-bottom-left-radius: 999px;
+  border-bottom-right-radius: 999px;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+  pointer-events: none; z-index: -1;
+}
+
+/* ——— Menú ——— */
+.menu{
+  font-weight: 600;
+  font-size: 12px;
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+.menu--desktop{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(25px, 5vw, 60px);   
+  width: 100%;
+}
+
+.menu a{
+  color: var(--ink);
+  text-decoration: none;
+  padding: 8px 12px;             /* área clic más grande */
+  border-radius: 999px;
+  transition: color .2s ease, background .2s ease;
+}
+.menu a:hover{ color: var(--brand-dark); background: rgba(37,82,24,.08); }
+
+.menu-toggle{
+  display: none;
+  width: 40px; height: 40px; border: 1px solid rgba(0,0,0,.08);
+  border-radius: 10px; background: #fff;
+  justify-self: end; align-items: center; justify-content: center;
+}
+.menu-toggle__bar{ display: block; width: 20px; height: 2px; background: #1f2937; margin: 3px 0; }
+
+/* ——— Drawer móvil ——— */
+.mobile-drawer{ position: fixed; inset: 0; pointer-events: none; z-index: 98; }
+.mobile-drawer__backdrop{ position: absolute; inset: 0; background: rgba(0,0,0,.35); opacity: 0; transition: opacity .2s ease; border: 0; }
+.mobile-drawer__inner{
+  position: absolute; top: calc(var(--topbar-h) + var(--nav-h)); right: 0; bottom: 0; width: min(78vw, 320px);
+  background: #fff; transform: translateX(100%); transition: transform .25s ease;
+  box-shadow: -12px 0 24px rgba(0,0,0,.12); display: flex; padding: 16px;
+}
+.menu--mobile{ display: grid; gap: 14px; width: 100%; } /* +aire en móvil */
+.menu--mobile a{ padding: 12px 10px; border-radius: 10px; font-weight: 600; color: var(--ink); }
+.menu--mobile a:hover{ background: rgba(37,82,24,.08); color: var(--brand-dark); }
+.mobile-drawer.is-open{ pointer-events: auto; }
+.mobile-drawer.is-open .mobile-drawer__inner{ transform: translateX(0%); }
+.mobile-drawer.is-open .mobile-drawer__backdrop{ opacity: 1; }
+
+/* ——— Breakpoints ——— */
+@media (max-width: 980px){
+  :root{ --nav-h: 64px; --logo-size: 70px; --curve-diam: 100px; --curve-lift: 12px; }
+  .menu--desktop{ display: none; }
+  .menu-toggle{ display: inline-flex; }
+}
+@media (max-width: 760px){
+  :root{ --nav-h: 60px; --logo-size: 60px; --curve-diam: 92px; --curve-lift: 10px; }
+}
+@media (max-width: 420px){
+  :root{ --nav-h: 56px; --logo-size: 54px; --curve-diam: 86px; --curve-lift: 8px; --logo-drop: 20px; }
+  .icon{ width: 26px; height: 26px; }
+}

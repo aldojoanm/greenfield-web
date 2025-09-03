@@ -1,0 +1,100 @@
+:root, .intro-wrap { font-family: inherit; }
+
+/* Overlay full-screen encima de todo */
+.intro-wrap{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  animation: introFadeIn .28s ease both;
+  -webkit-overflow-scrolling: auto;
+  touch-action: none;
+}
+@keyframes introFadeIn{ from{ opacity:0 } to{ opacity:1 } }
+
+/* Salida */
+.intro-closing{ animation: introFadeOut .36s ease both }
+@keyframes introFadeOut{ from{ opacity:1 } to{ opacity:0 } }
+
+/* Video de fondo */
+.intro-video{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  pointer-events: none;
+}
+
+.intro-center{
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+  color: #fff;
+}
+
+.intro-logo{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); /* centro exacto */
+  width: min(46vw, 420px);          /* tamaño cómodo en desktop */
+  max-width: 80vw;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 10px 30px rgba(0,0,0,.35));
+  user-select: none;
+  pointer-events: none;
+}
+
+/* BOTÓN centrado, abajo */
+.intro-btn{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: clamp(6vh, 10vh, 12vh); 
+
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: clamp(28px, 5.2vh, 36px);   
+  padding: 0 clamp(28px, 4.5vw, 44px);
+  border-radius: 999px;
+
+  background: rgba(15,40,35,255);   
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: .02em;
+  line-height: 1;
+
+  backdrop-filter: saturate(110%) blur(1.2px);
+
+  box-shadow:
+    0 12px 32px rgba(0,0,0,.30),
+    inset 0 0 0 1px rgba(255,255,255,.06);
+  transition: transform .12s ease, box-shadow .2s ease, filter .2s ease, background .2s ease;
+}
+.intro-btn:hover{ 
+  background: rgba(25, 60, 50, 1); 
+  transform: translateX(-50%) translateY(-1px); 
+}
+.intro-btn:active{ 
+  background: rgba(37, 82, 24, 0.84); 
+  transform: translateX(-50%) translateY(0); 
+}
+.intro-btn:focus-visible{ outline: 3px solid rgba(255,255,255,.8); outline-offset: 3px; }
+
+/* Responsivo fino */
+@media (max-width: 640px){
+  .intro-logo{ width: min(64vw, 340px); }
+}
+@media (min-width: 1280px){
+  .intro-logo{ width: min(40vw, 460px); }
+}

@@ -1,0 +1,29 @@
+.nosotros {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.nosotros-block {
+  padding: 4rem 2rem;
+  text-align: center;
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.white-bg {
+  background-color: var(--blanco);
+  color: var(--gris-oscuro);
+}
+
+.green-bg {
+  background-color: var(--verde-claro);
+  color: var(--verde-oscuro);
+}

@@ -1,0 +1,40 @@
+.ecorural-section {
+  padding: 2rem;
+  background: #f2f2f2;
+  color: #222;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.ecorural-title {
+  font-size: 2.5rem;
+  color: #003c3e;
+}
+
+.ecorural-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.posts-container {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.post-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: 0.3s ease;
+}
+
+.post-card:hover {
+  transform: scale(1.03);
+}
+
+.post-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}

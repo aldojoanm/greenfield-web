@@ -1,0 +1,270 @@
+.contacto-container {
+  background-color: #000000;
+  min-height: 400vh;
+  position: relative;
+  overflow: hidden;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+  color: #ddd;
+}
+
+.iphone-wrapper {
+  will-change: transform, opacity;
+}
+
+.form-wrapper {
+  position: relative;
+  margin: 0 auto;
+  top: 50%;
+  margin-bottom: 5rem;
+  right: 10%;
+  transform: translateY(-50%);
+  transform-origin: top right;
+  max-width: 700px;
+  width: 90vw;
+  background-color: rgba(28, 28, 30, 0.9);
+  border-radius: 15px;
+  padding: 1rem 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  will-change: transform, opacity;
+  z-index: 5;
+}
+
+.form-box {
+  width: 100%;
+}
+
+.titulo-principal {
+  color: #25d366;
+  font-weight: 800;
+  font-size: 1.6rem !important;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.fila-nombres {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.3rem;
+  flex: 1;
+}
+
+.input-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #eee;
+}
+
+.input-group input,
+.input-group textarea {
+  width: 100%;
+  padding: 0.4rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid #444;
+  background-color: #222;
+  color: #eee;
+  font-size: 0.85rem;
+  outline: none;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+  resize: vertical;
+}
+
+.input-group input.error,
+.input-group textarea.error {
+  border-color: #ff3b30;
+}
+
+.error-msg {
+  color: #ff3b30;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.input-group textarea {
+  min-height: 70px;
+}
+
+.submit-btn {
+  margin-top: 0.8rem;
+  background-color: #25d366;
+  color: #000;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-btn:disabled {
+  background-color: #555;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.success-msg {
+  margin-top: 1rem;
+  background-color: #34c759;
+  color: #000;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.back-to-top-fixed {
+  position: fixed;
+  top: 1.2rem;
+  right: 1.5rem;
+  background-color: #25d366;
+  color: #000;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  box-shadow: 0 6px 15px rgba(37, 211, 102, 0.5);
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.back-to-top-fixed:hover {
+  background-color: #1ea846;
+  box-shadow: 0 8px 20px rgba(30, 168, 70, 0.7);
+}
+
+.scroll-indicator {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  z-index: 20;
+  text-align: center;
+}
+
+.logo-inicial {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 200px;
+  z-index: 50;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+/* --- Mini contenedores inferiores --- */
+.info-adicional-container {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.mini-contenedor {
+  flex: 1 1 48%;
+  background: rgba(28, 28, 30, 0.85);
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  color: #ddd;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.mini-contenedor a {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1rem;
+  width: 100%;
+  display: block;
+}
+
+.mini-contenedor a:hover {
+  text-decoration: underline;
+  color: #25d366;
+  background-color: rgba(37, 211, 102, 0.1);
+  border-radius: 8px;
+}
+
+/* Colores específicos para algunos mini contenedores */
+.mini-contenedor:nth-child(3) a {
+  color: #58a6ff;
+}
+
+.mini-contenedor:nth-child(4) a {
+  color: #bbb;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* --- MEDIA QUERIES RESPONSIVE --- */
+
+/* Móviles (max-width 480px) */
+@media (max-width: 480px) {
+  .form-wrapper {
+    top: auto;
+    right: auto;
+    transform: none;
+    margin: 2rem auto 3rem;
+    width: 95vw;
+    max-width: none;
+    padding: 1rem 1.5rem;
+  }
+
+  .fila-nombres {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .input-group input,
+  .input-group textarea {
+    font-size: 1rem; /* Más legible */
+  }
+
+  .mini-contenedor {
+    flex: 1 1 100%;
+  }
+}
+
+/* Tablets (481px a 900px) */
+@media (min-width: 481px) and (max-width: 900px) {
+  .form-wrapper {
+    right: 5%;
+    transform: translateY(-50%);
+    max-width: 600px;
+    padding: 1rem 2rem;
+    width: 90vw;
+  }
+}
+
+/* Grandes pantallas (901px en adelante) */
+@media (min-width: 901px) {
+  .form-wrapper {
+    right: 10%;
+    transform: translateY(-50%);
+  }
+}

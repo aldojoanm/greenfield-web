@@ -1,0 +1,47 @@
+:root {
+  --verde-oscuro: #003c3e;
+  --verde-claro: #a2ce39;
+  --blanco: #ffffff;
+  --gris-oscuro: #333333;
+  --fondo-verde-suave: #e6f2d3;
+  --font-titulo: 'Futura', sans-serif;
+  --font-texto: 'Futura', sans-serif;
+  --font-texto-dm: 'Roboto', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-texto);
+  color: var(--gris-oscuro);
+  /*background-color: var(--verde-oscuro);*/
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-titulo);
+  color: var(--verde-oscuro);
+}
+
+a {
+  color: var(--verde-oscuro);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Scrollbar custom (opcional) */
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 7ch; /* 7 caracteres */
+  }
+}
